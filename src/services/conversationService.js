@@ -18,13 +18,19 @@ export async function generateConversationReply({ mode, goal, roleplay, userMess
         {
           role: 'developer',
           content: [
-            { type: 'text', text: 'Return strict JSON only. Keep the reply concise and supportive.' }
+            {
+              type: 'input_text',
+              text: 'Return strict JSON only. Keep the reply concise and supportive.'
+            }
           ]
         },
         {
           role: 'user',
           content: [
-            { type: 'text', text: prompt }
+            {
+              type: 'input_text',
+              text: prompt
+            }
           ]
         }
       ],
@@ -39,7 +45,10 @@ export async function generateConversationReply({ mode, goal, roleplay, userMess
               reply: { type: 'string' },
               correctedUserText: { type: ['string', 'null'] },
               quickFeedback: { type: ['string', 'null'] },
-              suggestedReplies: { type: 'array', items: { type: 'string' } },
+              suggestedReplies: {
+                type: 'array',
+                items: { type: 'string' }
+              },
               score: {
                 type: ['object', 'null'],
                 additionalProperties: false,
@@ -54,14 +63,25 @@ export async function generateConversationReply({ mode, goal, roleplay, userMess
                 type: ['object', 'null'],
                 additionalProperties: false,
                 properties: {
-                  hardWords: { type: 'array', items: { type: 'string' } },
+                  hardWords: {
+                    type: 'array',
+                    items: { type: 'string' }
+                  },
                   tip: { type: 'string' }
                 },
                 required: ['hardWords', 'tip']
               },
               isFallback: { type: 'boolean' }
             },
-            required: ['reply', 'correctedUserText', 'quickFeedback', 'suggestedReplies', 'score', 'pronunciation', 'isFallback']
+            required: [
+              'reply',
+              'correctedUserText',
+              'quickFeedback',
+              'suggestedReplies',
+              'score',
+              'pronunciation',
+              'isFallback'
+            ]
           }
         }
       }
