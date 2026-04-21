@@ -166,7 +166,8 @@ export function fallbackConversation(mode, userMessage, uiLanguage = 'en') {
     casual: 'Nice answer. Can you tell me more about your hobbies or daily routine?',
     travel: 'Nice. How would you ask for directions or help while traveling?',
     interview: 'Good start. Now tell me about one of your strengths.',
-    work: 'That sounds clear. How would you explain one of your daily tasks?'
+    work: 'That sounds clear. How would you explain one of your daily tasks?',
+    expert: 'Good start. Tell me the exact situation you want to practice, and I will coach you step by step.'
   };
   return {
     reply: replyMap[mode] || 'That is a good start. Can you tell me more?',
