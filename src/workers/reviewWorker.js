@@ -10,6 +10,8 @@ export function startReviewWorker() {
     const result = await generateReview({
       transcript: job.data.payload.transcript,
       topicTitle: job.data.payload.topicTitle,
+      uiLanguage: job.data.payload.uiLanguage,
+      learningLanguage: job.data.payload.learningLanguage,
       isPremium: job.data.isPremium
     });
     await saveReviewSession(job.data.appUserId, job.data.payload, result);
