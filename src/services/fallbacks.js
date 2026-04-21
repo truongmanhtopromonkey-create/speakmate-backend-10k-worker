@@ -123,6 +123,46 @@ const conversationFallbackCopy = {
   ar: {
     quickFeedback: 'خدمة محادثة الذكاء الاصطناعي مشغولة حاليًا، لذلك يظهر تقييم أساسي.',
     pronunciationTip: 'حاول التحدث ببطء أكثر قليلًا وشدّد بوضوح على الكلمات الأهم.'
+  },
+  'zh-Hant': {
+    quickFeedback: '這是基本回饋；請試著用更自然的一句話回答。',
+    pronunciationTip: '放慢一點，清楚說出關鍵字。'
+  },
+  id: {
+    quickFeedback: 'Ini umpan balik dasar; coba jawab dengan satu kalimat yang lebih alami.',
+    pronunciationTip: 'Bicaralah sedikit lebih pelan dan tekankan kata penting.'
+  },
+  th: {
+    quickFeedback: 'นี่คือคำแนะนำพื้นฐาน ลองตอบให้เป็นธรรมชาติมากขึ้นหนึ่งประโยค',
+    pronunciationTip: 'พูดช้าลงเล็กน้อยและเน้นคำสำคัญให้ชัดเจน'
+  },
+  hi: {
+    quickFeedback: 'यह बुनियादी feedback है; एक और natural sentence बोलकर देखें।',
+    pronunciationTip: 'थोड़ा धीरे बोलें और मुख्य शब्दों पर stress दें।'
+  },
+  ru: {
+    quickFeedback: 'Это базовая подсказка; попробуйте ответить одной более естественной фразой.',
+    pronunciationTip: 'Говорите чуть медленнее и выделяйте ключевые слова.'
+  },
+  nl: {
+    quickFeedback: 'Dit is basisfeedback; probeer één natuurlijkere zin te zeggen.',
+    pronunciationTip: 'Spreek iets langzamer en benadruk de belangrijkste woorden.'
+  },
+  pl: {
+    quickFeedback: 'To podstawowa wskazówka; spróbuj powiedzieć jedno bardziej naturalne zdanie.',
+    pronunciationTip: 'Mów trochę wolniej i wyraźnie akcentuj ważne słowa.'
+  },
+  sv: {
+    quickFeedback: 'Detta är enkel feedback; prova att säga en mer naturlig mening.',
+    pronunciationTip: 'Tala lite långsammare och betona de viktigaste orden.'
+  },
+  ms: {
+    quickFeedback: 'Ini maklum balas asas; cuba jawab dengan satu ayat yang lebih semula jadi.',
+    pronunciationTip: 'Bercakap sedikit perlahan dan tekankan perkataan penting.'
+  },
+  fil: {
+    quickFeedback: 'Basic feedback ito; subukan mong magsabi ng mas natural na sentence.',
+    pronunciationTip: 'Magsalita nang kaunti pang mabagal at idiin ang mahahalagang salita.'
   }
 };
 
@@ -160,29 +200,21 @@ export function fallbackReview(transcript, topicTitle, isPremium = false, uiLang
 
 export function fallbackConversation(mode, userMessage, uiLanguage = 'en') {
   const copy = getConversationCopy(uiLanguage);
-  const wordCount = userMessage.trim().split(/\s+/).filter(Boolean).length;
-  const hardWords = userMessage.split(/\s+/).filter(w => w.length >= 7).slice(0, 3);
+  const cleanMessage = String(userMessage || '').trim();
   const replyMap = {
-    casual: 'Nice answer. Can you tell me more about your hobbies or daily routine?',
-    travel: 'Nice. How would you ask for directions or help while traveling?',
-    interview: 'Good start. Now tell me about one of your strengths.',
-    work: 'That sounds clear. How would you explain one of your daily tasks?',
-    expert: 'Good start. Tell me the exact situation you want to practice, and I will coach you step by step.'
+    casual: 'What do you usually enjoy talking about with friends?',
+    travel: 'What would you ask first when you arrive at the hotel?',
+    interview: 'What strength would you like to explain in your interview?',
+    work: 'What update would you give your manager today?',
+    expert: 'What exact situation do you want to practice next?'
   };
   return {
-    reply: replyMap[mode] || 'That is a good start. Can you tell me more?',
-    correctedUserText: userMessage,
+    reply: replyMap[mode] || 'What would you say next?',
+    correctedUserText: cleanMessage || null,
     quickFeedback: copy.quickFeedback,
-    suggestedReplies: ['Can you repeat the question?', 'Let me explain in a simple way.', 'Here is a more complete answer.'],
-    score: {
-      grammar: Math.min(82, 55 + wordCount * 3),
-      fluency: Math.min(84, 58 + wordCount * 2),
-      naturalness: Math.min(80, 56 + wordCount * 2)
-    },
-    pronunciation: {
-      hardWords,
-      tip: copy.pronunciationTip
-    },
+    suggestedReplies: ['Let me try again.', 'I want to explain it simply.'],
+    score: null,
+    pronunciation: null,
     isFallback: true
   };
 }
