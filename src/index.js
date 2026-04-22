@@ -12,7 +12,13 @@ const workers = [
 ];
 
 for (const worker of workers) {
-  worker.on('completed', job => logger.info({ queue: worker.name, jobId: job.id }, 'job completed'));
+  worker.on('completed', (job, result) => logger.info({
+    queue: worker.name,
+    jobId: job.id,
+    isFallback: result?.isFallback,
+    reply: result?.reply
+  }, 'job completed'));
+
   worker.on('failed', (job, err) => logger.error({ queue: worker.name, jobId: job?.id, err }, 'job failed'));
 }
 

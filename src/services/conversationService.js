@@ -1,6 +1,7 @@
 import { openai } from './openaiClient.js';
 import { env } from '../config/env.js';
 import { fallbackConversation } from './fallbacks.js';
+import { logger } from '../lib/logger.js';
 import { getLanguageName, normalizeLearningLanguage, normalizeLocale } from '../lib/language.js';
 import { conversationReplyResponseSchema } from '../workers/schemas.js';
 
@@ -37,8 +38,7 @@ const conversationReplyJsonSchema = {
       },
       required: ['hardWords', 'tip']
     },
-    isFallback: { type: 'boolean' },
-    userTranscript: { type: 'string' }
+    isFallback: { type: 'boolean' }
   },
   required: [
     'reply',
@@ -108,6 +108,7 @@ Return exactly:
 - suggestedReplies: exactly 2 short English replies the learner can tap and say next.
 - score: null.
 - pronunciation: null.
+- isFallback: false.
 
 Do not give long analysis. Do not include markdown. Do not translate the coach reply.`;
 
@@ -137,7 +138,8 @@ Do not give long analysis. Do not include markdown. Do not translate the coach r
         format: {
           type: 'json_schema',
           name: 'conversation_reply',
-          schema: conversationReplyJsonSchema
+          schema: conversationReplyJsonSchema,
+          strict: true
         }
       }
     });
@@ -146,6 +148,17 @@ Do not give long analysis. Do not include markdown. Do not translate the coach r
     const validated = conversationReplyResponseSchema.parse(parsed);
     return validated;
   } catch (error) {
+    logger.error({
+      err: error,
+      message: error?.message,
+      status: error?.status,
+      code: error?.code,
+      type: error?.type,
+      param: error?.param,
+      model: env.openaiModelText,
+      hasOpenAIKey: Boolean(env.openaiApiKey)
+    }, 'conversation OpenAI call failed');
+
     if (!env.enableFallback) throw error;
     return fallbackConversation(mode, userMessage, normalizedUiLanguage);
   }
